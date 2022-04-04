@@ -1,6 +1,6 @@
 const route = require('express').Router()
-const passport = require('passport')
-require('../Middleware/passport')
+const passport = require('../Middleware/passport')
+// require('../Middleware/passport')
 const { isJefe } = require('../Middleware/validaciones') 
 const { create, index, unirse, eliminar  } = require('../Controllers/Entorno.controller')
 

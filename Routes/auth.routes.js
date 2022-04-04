@@ -1,9 +1,9 @@
 const route = require('express').Router()
-const passport = require('passport')
-require('../Middleware/passport')
+const passport = require('../Middleware/passport')
+
 const { multer } = require('../Middleware/multer')
 const { login, register, googleAuth, update } = require('../Controllers/Auth.controller');
-const { frontendPort, frontendUrl } = require('../Config/app');
+const { frontendUrl } = require('../Config/app');
 
 
 
@@ -18,7 +18,7 @@ route.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect(`${frontendUrl}:${frontendPort}`);
+    res.redirect(`${frontendUrl}`);
 });
 
 route.get('/auth/google/get', googleAuth)

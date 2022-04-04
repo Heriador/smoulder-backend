@@ -1,11 +1,11 @@
 const route = require('express').Router();
 
 const { index, crearActividad, eliminarActividad, actualizarEstadoActividad } = require('../Controllers/Actividad.controller');
-const passport = require('passport');
+const passport = require('../Middleware/passport');
 const { multer } = require('../Middleware/multer')
 const { isJefe } = require('../Middleware/validaciones')
 
-require('../Middleware/passport')
+// require('../Middleware/passport')
 
 
 route.post('/actividad/crear',[passport.authenticate('jwt', {session: false}), multer.any(), isJefe], crearActividad)

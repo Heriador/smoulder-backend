@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
 const { crear, obtener, eliminar } = require('../Controllers/Archivos.controller');
-const passport = require('passport');
+const passport = require('../Middleware/passport');
 const { multer } = require('../Middleware/multer')
 
-require('../Middleware/passport')
+// require('../Middleware/passport')
 
 router.post('/archivo/crear',[passport.authenticate('jwt', { session: false }), multer.single('file')] ,crear);
 router.get('/archivo/obtener', [passport.authenticate('jwt', { session: false })], obtener)
