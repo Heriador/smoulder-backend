@@ -4,7 +4,7 @@ const ExtractJwt = require('passport-jwt').ExtractJwt.fromAuthHeaderAsBearerToke
 const passport = require('passport')
 const Usuario = require('../models').Usuario
 const Roles = require('../models').Roles
-const { clientId, clientSecret, appKey } = require('../config/app')
+const { clientId, clientSecret, appKey } = require('../Config/app')
 
 passport.serializeUser((user,done) => {
     return done(null, user.id)
