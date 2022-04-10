@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 module.exports = {
-    appPort: process.env.APP_PORT,
+    appPort: process.env.PORT || 8080,
     appUrl: process.env.APP_URL,
     appKey: process.env.APP_KEY,
     frontendUrl: process.env.FRONTEND_URL,

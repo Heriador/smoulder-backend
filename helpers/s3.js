@@ -1,7 +1,7 @@
 const S3 = require('aws-sdk/clients/s3');
 const fs = require('fs');
 
-const { awsRegion, awsAccessKey, awsSecretKey } = require('../Config/app')
+const { awsRegion, awsAccessKey, awsSecretKey } = require('../config/app')
 
 
 
