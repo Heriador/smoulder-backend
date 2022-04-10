@@ -3,7 +3,7 @@ const passport = require('../Middleware/passport')
 
 const { multer } = require('../Middleware/multer')
 const { login, register, googleAuth, update } = require('../Controllers/Auth.controller');
-const { frontendUrl } = require('../config/app');
+const { frontendUrl } = require('../Config/app');
 
 
 

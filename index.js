@@ -5,7 +5,7 @@ const passport = require('passport')
 // const morgan = require('morgan')
 const app = express()
 
-const { appPort, frontendUrl } = require('./config/app.js')
+const { appPort, frontendUrl } = require('./Config/app.js')
 const hash = require('crypto').Hash('sha256', 'base64')
 
 

@@ -2,7 +2,7 @@ const AuthCtrl = {}
 const Usuario = require('../models').Usuario
 const Roles = require('../models').Roles
 const bcrypt = require('bcrypt')
-const { appKey }  = require('../config/app')
+const { appKey }  = require('../Config/app')
 const jwt = require('jsonwebtoken')
 const { uploadToBucket } = require('../helpers/s3')
 
