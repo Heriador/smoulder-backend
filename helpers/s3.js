@@ -11,11 +11,6 @@ const storage = new S3({
      region: awsRegion
 })
 
-
-const getBuckets = () => {
-     return storage.listBuckets().promise()
-}
-
 const uploadToBucket = (bucketName, file) => {
 
      const stream = fs.createReadStream(file.path)
@@ -31,7 +26,4 @@ const uploadToBucket = (bucketName, file) => {
 
 
 
-module.exports = {
-     getBuckets,
-     uploadToBucket
-}
+module.exports = uploadToBucket

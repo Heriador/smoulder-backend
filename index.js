@@ -1,8 +1,9 @@
+
+
 const express = require('express')
 const cors = require('cors')
 const session = require('express-session')
 const passport = require('passport')
-// const morgan = require('morgan')
 const app = express()
 
 const { appPort, frontendUrl } = require('./Config/app.js')
@@ -14,7 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({origin: [`${frontendUrl}`, 'https://lh3.googleusercontent.com'], credentials: true}));
 app.use('/public',express.static(__dirname + '/public'));
-// app.use(morgan('dev'));
 app.use(
     session({
         secret: `${hash}`,
@@ -24,6 +24,12 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+if(process.env.NODE_ENV !== 'production'){
+    const morgan = require('morgan')
+    app.use(morgan('dev'));
+
+}
 
 //landing
 
