@@ -78,18 +78,6 @@ AuthCtrl.register = async (req,res) => {
 
 }
 
-AuthCtrl.googleAuth = async (req,res) => {
-
-    try {
-        const userWithToken = generateToken(req.user.dataValues)
-
-    res.send(userWithToken)
-    } catch (e) {
-        res.status(400).send(e.message)
-    }
-
-}
-
 
 AuthCtrl.update = async (req,res) => {
     const { bucketName, nombre, apellido, correo, contraseña } = req.body
