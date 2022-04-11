@@ -7,6 +7,13 @@ module.exports = {
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "postgres",
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
     "logging": false
   },
   "test": {
@@ -15,6 +22,14 @@ module.exports = {
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "postgres",
+    "logging": false,
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
     "logging": false
   },
   "production": {
@@ -23,6 +38,14 @@ module.exports = {
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "postgres",
+    "logging": false,
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    },
     "logging": false
   }
 }
