@@ -25,11 +25,13 @@ AuthCtrl.login = async (req,res) => {
             }
         })
     
+
+
         if(!user){
-            res.status(404).json({'Error': 'User not found'})
+            return res.status(404).json({'Error': 'User not found'})
         }
         if(!bcrypt.compareSync(contraseña, user.contraseña)){
-            res.status(401).json({'Error': 'Incorrect Password'})
+            return res.status(401).json({'Error': 'Incorrect Password'})
         }
         
         const userWithToken = generateToken(user.get({ raw: true}))
