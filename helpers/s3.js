@@ -12,7 +12,7 @@ const storage = new S3({
 })
 
 const uploadToBucket = (bucketName, file) => {
-
+     console.log(file);
      const stream = fs.createReadStream(file.path)
      const params = {
           Bucket: bucketName,
@@ -26,4 +26,4 @@ const uploadToBucket = (bucketName, file) => {
 
 
 
-module.exports = uploadToBucket
+module.exports = {uploadToBucket}

@@ -3,7 +3,7 @@ const Actividad = require('../models').Actividades
 const Archivos = require('../models').Archivos
 const Usuarios = require('../models').Usuario
 const UsuarioActividad = require('../models').UsuarioActividade
-const { uploadToBucket } = require('../helpers/s3')
+const {uploadToBucket}  = require('../helpers/s3')
 
 
 ActividadCtrll.index = async (req, res) => {
@@ -86,9 +86,8 @@ ActividadCtrll.crearActividad = async (req, res) => {
 
      
           if(req.files && req.files.length > 0) {
-
-
-               if(Array.isArray(req.files)) {
+               if(req.files.length > 1) {
+                    // console.log(req.files);
                     Promise.all(req.files.map((file) => {
                          return uploadToBucket('archivos-smoulder', file)      
                     }))
@@ -112,7 +111,8 @@ ActividadCtrll.crearActividad = async (req, res) => {
                     })
                }
                else{
-                    uploadToBucket('archivos-smoulder', req.files)
+                    console.log(req.files);
+                    uploadToBucket('archivos-smoulder', req.files[0])
                     .then(result => {
                          Archivos.create({
                               nombre: result.Key,
@@ -121,7 +121,7 @@ ActividadCtrll.crearActividad = async (req, res) => {
                               usuarioId: req.user.id
                          })
                          .then(archivo =>{
-
+                              actividad.dataValues.Usuarios = Usuarios
                               actividad.dataValues.Archivos = archivo
                               actividad.dataValues.creador = req.user
                               delete actividad.dataValues.creadorId
@@ -139,7 +139,8 @@ ActividadCtrll.crearActividad = async (req, res) => {
                res.send(actividad)
           }
      } catch (e) {
-          res.status(400).send(e.message)
+          console.log(e);
+          // res.status(400).send(e.message)
 
      }
 }

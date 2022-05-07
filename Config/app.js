@@ -11,7 +11,7 @@ module.exports = {
     dbUser: process.env.DB_USER,
     dbPassword: process.env.DB_PASSWORD,
     dbName: process.env.DB_NAME,
-    awsRegion: process.env.AWS_REGION,
-    awsAccessKey: process.env.AWS_ACCESS_KEY,
-    awsSecretKey: process.env.AWS_SECRET_KEY,
+    awsRegion: process.env.APP_AWS_REGION,
+    awsAccessKey: process.env.APP_AWS_ACCESS_KEY,
+    awsSecretKey: process.env.APP_AWS_SECRET_KEY,
 }
