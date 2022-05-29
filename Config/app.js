@@ -6,7 +6,6 @@ module.exports = {
     appPort: process.env.PORT,
     appUrl: process.env.APP_URL,
     appKey: process.env.APP_KEY,
-    frontendUrl: process.env.FRONTEND_URL,
     dbHost: process.env.DB_HOST,
     dbUser: process.env.DB_USER,
     dbPassword: process.env.DB_PASSWORD,

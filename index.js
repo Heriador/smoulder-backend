@@ -6,14 +6,14 @@ const session = require('express-session')
 const passport = require('passport')
 const app = express()
 
-const { appPort, frontendUrl } = require('./Config/app.js')
+const { appPort } = require('./Config/app.js')
 const hash = require('crypto').Hash('sha256', 'base64')
 
 
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({origin: [`${frontendUrl}`, 'https://lh3.googleusercontent.com'], credentials: true}));
+app.use(cors());
 app.use('/public',express.static(__dirname + '/public'));
 app.use(
     session({

@@ -1,8 +1,8 @@
 
 const isJefe = (req, res, next) => {
      if (req.user.Rol.nombre === 'jefe') {
-          next();
-          return
+          
+          return next();
      }
 
      return res.status(401).json({message: 'Requiere Rol de Jefe'})
