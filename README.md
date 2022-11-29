@@ -4,7 +4,7 @@
 
 _App **SMOULDER**, designed and created as a final project of the subject software engineering of Universidad de cartagena_
 
-## Justification
+## Justification work
 
 This app was created due the pandemic situation where a lot of companies where forced to work remotely, therefore. 
 They needed a way to managed the files related to their proyects and that every employee can use them whenever they need, 
