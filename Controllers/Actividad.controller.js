@@ -87,49 +87,42 @@ ActividadCtrll.crearActividad = async (req, res) => {
      
           if(req.files && req.files.length > 0) {
                if(req.files.length > 1) {
-                    // console.log(req.files);
-                    Promise.all(req.files.map((file) => {
-                         return uploadToBucket('archivos-smoulder', file)      
-                    }))
-                    .then(results => {
-                         const archivos = results.map(result => {
-                              return {
-                                   nombre: result.Key,
-                                   url: result.Location,
-                                   actividadId: actividad.id,
-                                   usuarioId: req.user.id
-                              }
-                         })
-                         Archivos.bulkCreate(archivos)
-                         .then(archivos => {
-                              actividad.dataValues.Usuarios = Usuarios
-                              actividad.dataValues.Archivos = archivos
-                              actividad.dataValues.creador = req.user
-                              delete actividad.dataValues.creadorId
-                              res.send(actividad)
-                         })
-                    })
-               }
-               else{
-                    console.log(req.files);
-                    uploadToBucket('archivos-smoulder', req.files[0])
-                    .then(result => {
-                         Archivos.create({
-                              nombre: result.Key,
-                              url: result.Location,
+                    const archivos = []
+                    for(let file of req.files){
+                         await uploadToBucket('smoulder-2', file)
+                         archivos.push({
+                              nombre: file.originalname,
+                              url: 'aws',
                               actividadId: actividad.id,
                               usuarioId: req.user.id
                          })
-                         .then(archivo =>{
-                              actividad.dataValues.Usuarios = Usuarios
-                              actividad.dataValues.Archivos = archivo
-                              actividad.dataValues.creador = req.user
-                              delete actividad.dataValues.creadorId
+                    }
+                    const files = await Archivos.bulkCreate(archivos)
+                    actividad.dataValues.Usuarios = Usuarios
+                    actividad.dataValues.Archivos = files
+                    actividad.dataValues.creador = req.user
+                    delete actividad.dataValues.creadorId
+                    res.send(actividad)
 
-                              res.send(actividad)
-                         })
-                         
-                    })
+                   
+               }
+               else{
+                    console.log(req.files);
+
+                   await uploadToBucket('smoulder-2', req.files[0])
+                   const archivo = await Archivos.create({
+                         nombre: req.files[0].originalname,
+                         url: 'aws',
+                         actividadId: actividad.id,
+                         usuarioId: req.user.id
+                   })
+                    actividad.dataValues.Usuarios = Usuarios
+                    actividad.dataValues.Archivos = archivo
+                    actividad.dataValues.creador = req.user
+                    delete actividad.dataValues.creadorId
+                    res.send(actividad)
+
+                    
                }
           }
           else{

@@ -1,5 +1,3 @@
-
-
 const express = require('express')
 const cors = require('cors')
 const session = require('express-session')
@@ -8,12 +6,16 @@ const app = express()
 
 const { appPort } = require('./Config/app.js')
 const hash = require('crypto').Hash('sha256', 'base64')
-
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use('/public',express.static(__dirname + '/public'));
 app.use(
     session({

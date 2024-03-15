@@ -1,88 +1,101 @@
-const ArchivoCtrll = {}
-const { uploadToBucket } = require("../helpers/s3")
-const Archivos = require('../models').Archivos
-const UsuarioActividad = require('../models').UsuarioActividade
+const ArchivoCtrll = {};
+const { uploadToBucket, deleteObject, getObjectUrl } = require('../helpers/s3');
+const Archivos = require('../models').Archivos;
+const UsuarioActividad = require('../models').UsuarioActividade;
 
-ArchivoCtrll.crear = async (req,res) => {
-     const { actividadId } = req.body
+ArchivoCtrll.crear = async (req, res) => {
+  const { actividadId } = req.body;
+  console.log(req.file.originalname);
+  try {
+    await uploadToBucket('smoulder-2', req.file);
 
-     try {
-
-     const file = await  uploadToBucket('archivos-smoulder', req.file)
-
-     await UsuarioActividad.update({
-          estadoActividad: 'entregado'
-     },{
-          where:{
-               actividadId,
-               usuarioId: req.user.id
-          },
-          field: ['estadoActividad'],
-     })
-
-     const archivo = await Archivos.create({
-          nombre: file.key,
-          url: file.Location,
+    await UsuarioActividad.update(
+      {
+        estadoActividad: 'entregado',
+      },
+      {
+        where: {
           actividadId,
-          usuarioId: req.user.id
-     })
+          usuarioId: req.user.id,
+        },
+        field: ['estadoActividad'],
+      }
+    );
 
-     res.send(archivo)
-          
-     } catch (e) {
-          res.status(400).send(e.message)
+    const archivo = await Archivos.create({
+      nombre: req.file.originalname,
+      url: 'aws',
+      actividadId,
+      usuarioId: req.user.id,
+    });
 
-     }
-}
+    const url = await getObjectUrl(req.file.filename);
 
-ArchivoCtrll.obtener = async (req,res) => {
-     const {actividadId, usuarioId} = req.query
+    archivo.dataValues.url = url;
 
-     try {
-          const archivo = await Archivos.findOne({
-               where: {
-                    actividadId,
-                    usuarioId
-               }
-          })
-          res.send(archivo)
-     } catch (e) {
-          res.status(400).send(e.message)
-          
-     }
+    res.send(archivo);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+};
 
-}
+ArchivoCtrll.obtener = async (req, res) => {
+  const { actividadId, usuarioId } = req.query;
 
-ArchivoCtrll.eliminar = async (req,res) => {
+  try {
+    const archivo = await Archivos.findOne({
+      where: {
+        actividadId,
+        usuarioId,
+      },
+    });
 
-    try {
-          await Archivos.destroy({
-               where: {
-                    id: req.params.id
-               }
-          })
+    if (!archivo) return res.status(404).send('No se encontró el archivo');
 
-          const [rows, results] = await UsuarioActividad.update({
-               estadoActividad: 'pendiente'
-          },{
-               where:{
-                    actividadId: req.query.actividadId,
-                    usuarioId: req.user.id
-               },
-               field: ['estadoActividad'],
-               returning: true
-          })
+    const url = await getObjectUrl(archivo.dataValues.nombre);
 
-          res.json({
-               message: 'Archivo eliminado',
-               results
-          })
+    archivo.dataValues.url = url;
 
-    } catch (e) {
-     res.status(400).send(e.message)
+    res.send(archivo);
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+};
 
-    }
+ArchivoCtrll.eliminar = async (req, res) => {
+  try {
+    const archivo = await Archivos.findByPk(req.params.id);
+    console.log(archivo);
 
-}
+    await Archivos.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
 
-module.exports = ArchivoCtrll
+    const [rows, results] = await UsuarioActividad.update(
+      {
+        estadoActividad: 'pendiente',
+      },
+      {
+        where: {
+          actividadId: req.query.actividadId,
+          usuarioId: req.user.id,
+        },
+        field: ['estadoActividad'],
+        returning: true,
+      }
+    );
+
+    await deleteObject(archivo.dataValues.nombre);
+
+    await res.json({
+      message: 'Archivo eliminado',
+      results,
+    });
+  } catch (e) {
+    res.status(400).send(e.message);
+  }
+};
+
+module.exports = ArchivoCtrll;

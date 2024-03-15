@@ -1,29 +1,52 @@
 const S3 = require('aws-sdk/clients/s3');
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const fs = require('fs');
 
-const { awsRegion, awsAccessKey, awsSecretKey } = require('../Config/app')
+const { awsRegion, awsAccessKey, awsSecretKey } = require('../Config/app');
 
+console.log(awsRegion, awsAccessKey, awsSecretKey);
 
+const storage = new S3Client({
+  region: awsRegion,
+  credentials: {
+    accessKeyId: awsAccessKey,
+    secretAccessKey: awsSecretKey,
+  },
+});
 
-const storage = new S3({
-     accessKeyId: awsAccessKey,
-     secretAccessKey: awsSecretKey,
-     region: awsRegion
-})
+const uploadToBucket = async (bucketName, file) => {
+  //console.log(file);
+  const stream = fs.createReadStream(file.path);
+  const command = new PutObjectCommand({
+    Bucket: 'smoulder-2',
+    Key: file.filename,
+    Body: stream,
+  });
 
-const uploadToBucket = (bucketName, file) => {
-     console.log(file);
-     const stream = fs.createReadStream(file.path)
-     const params = {
-          Bucket: bucketName,
-          Key: file.filename,
-          Body: stream,
-     }
+  return storage.send(command);
+};
 
-     return storage.upload(params).promise()
-}
+const getObjectUrl = async (filename) => {
+  const command = new GetObjectCommand({
+    Bucket: 'smoulder-2',
+    Key: filename,
+  });
+  const url = await getSignedUrl(storage, command);
+  return url;
+};
 
+const deleteObject = async (filename) => {
+  const command = new DeleteObjectCommand({
+    Bucket: 'smoulder-2',
+    Key: filename,
+  });
+  return storage.send(command);
+};
 
-
-
-module.exports = {uploadToBucket}
+module.exports = { uploadToBucket, getObjectUrl, deleteObject };
