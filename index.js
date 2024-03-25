@@ -4,10 +4,10 @@ const session = require('express-session')
 const passport = require('passport')
 const app = express()
 
-const { appPort } = require('./Config/app.js')
+const { appPort,frontendUrl } = require('./Config/app.js')
 const hash = require('crypto').Hash('sha256', 'base64')
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: [`${frontendUrl}`,'http://localhost:3000'],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
