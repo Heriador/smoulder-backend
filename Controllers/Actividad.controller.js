@@ -48,8 +48,9 @@ ActividadCtrll.index = async (req, res) => {
                const avatarUrl = await getObjectUrl(actividad.creador.avatar)
                actividad.creador.avatar = avatarUrl
                for(let archivo of actividad.Archivos) {
-                    const archivoUrl = await getObjectUrl(archivo.url)
-                    archivo.url = archivoUrl
+                    console.log(archivo)
+                    let archivoUrl = await getObjectUrl(archivo.dataValues.nombre)
+                    archivo.url = archivoUrl;
                }
           }
 
