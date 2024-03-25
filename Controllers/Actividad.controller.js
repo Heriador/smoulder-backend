@@ -3,7 +3,7 @@ const Actividad = require('../models').Actividades
 const Archivos = require('../models').Archivos
 const Usuarios = require('../models').Usuario
 const UsuarioActividad = require('../models').UsuarioActividade
-const {uploadToBucket}  = require('../helpers/s3')
+const {uploadToBucket, getObjectUrl}  = require('../helpers/s3')
 
 
 ActividadCtrll.index = async (req, res) => {
@@ -42,6 +42,17 @@ ActividadCtrll.index = async (req, res) => {
                ],
                order: [['createdAt', 'ASC']]
           })
+
+
+          for(let actividad of actividades) {
+               const avatarUrl = await getObjectUrl(actividad.creador.avatar)
+               actividad.creador.avatar = avatarUrl
+               for(let archivo of actividad.Archivos) {
+                    const archivoUrl = await getObjectUrl(archivo.url)
+                    archivo.url = archivoUrl
+               }
+          }
+
           res.json(actividades)
           
      } catch (e) {
@@ -54,6 +65,11 @@ ActividadCtrll.crearActividad = async (req, res) => {
           
      const { titulo, contenido, entornoId, listaUsuarios, fecha } = req.body
      let Usuarios = []
+     if(req.user.avatar){
+          const avatarUrl = await getObjectUrl(req.user.avatar)
+          req.user.avatar = avatarUrl
+     }
+
      try {
           const actividad = await Actividad.create({
                titulo,

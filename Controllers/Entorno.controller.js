@@ -31,6 +31,7 @@ EntornoCtrll.index = async (req, res) => {
     if (user) {
       for (let entorno of user.EntornoTrabajos) {
         for (let usuario of entorno.Usuarios) {
+          if(!usuario.dataValues.avatar) continue
           let avatarUrl = await getObjectUrl(usuario.dataValues.avatar);
           usuario.dataValues.avatar = avatarUrl;
         }
@@ -46,7 +47,7 @@ EntornoCtrll.index = async (req, res) => {
 
 EntornoCtrll.create = async (req, res) => {
   const { titulo, descripcion } = req.body;
-
+  //console.log(req.user)
   try {
     const entorno = await Entorno.create({
       titulo,
@@ -58,6 +59,10 @@ EntornoCtrll.create = async (req, res) => {
       usuarioId: req.user.id,
       entornoId: entorno.id,
     });
+    if(req.user.avatar){
+      let avatarUrl = await getObjectUrl(req.user.avatar);
+      req.user.avatar = avatarUrl;
+    }
     entorno.dataValues.creador = req.user;
     res.send(entorno);
   } catch (e) {
@@ -84,6 +89,13 @@ EntornoCtrll.unirse = async (req, res) => {
         },
       ],
     });
+    console.log(entorno);
+
+    for(let usuario of entorno.Usuarios){
+      if(!usuario.dataValues.avatar) continue
+      let avatarUrl = await getObjectUrl(usuario.dataValues.avatar);
+      usuario.dataValues.avatar = avatarUrl;
+    }
 
     res.send(entorno);
   } catch (error) {

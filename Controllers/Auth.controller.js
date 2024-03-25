@@ -8,7 +8,8 @@ const { uploadToBucket, getObjectUrl } = require('../helpers/s3');
 
 AuthCtrl.login = async (req, res) => {
   const { correo, contraseña } = req.body;
-
+  console.log(req.body);
+  
   try {
     const user = await Usuario.findOne({
       where: {
@@ -25,11 +26,6 @@ AuthCtrl.login = async (req, res) => {
       },
     });
 
-    const avatarUrl = await getObjectUrl(user.dataValues.avatar);
-
-    user.dataValues.avatar = avatarUrl;
-
-    // console.log(user);
     if (!user) {
       return res.status(404).json({ Error: 'User not found' });
     }
@@ -37,10 +33,17 @@ AuthCtrl.login = async (req, res) => {
       return res.status(401).json({ Error: 'Incorrect Password' });
     }
 
+    if(user.dataValues.avatar){
+      const avatarUrl = await getObjectUrl(user.dataValues.avatar);
+      user.dataValues.avatar = avatarUrl;
+    }
+
     const userWithToken = generateToken(user.get({ raw: true }));
     res.send(userWithToken);
   } catch (e) {
-    res.status(400).send(e.message);
+    console.log(e);
+    
+    res.status(400).send(e);
   }
 };
 
@@ -55,6 +58,12 @@ AuthCtrl.register = async (req, res) => {
       contraseña,
       rol,
     });
+    console.log(user);
+    
+
+    if(!user){
+      return res.status(400).send({Error: 'Error creating user'})
+    }
 
     const rolUser = await Roles.findOne({
       where: {
@@ -62,13 +71,13 @@ AuthCtrl.register = async (req, res) => {
       },
     });
 
-    user.dataValues.Rol = rolUser.dataValues;
+    user.dataValues.rol = rolUser.dataValues.nombre;
     delete user.dataValues.rol;
 
     const userWithToken = generateToken(user.get({ raw: true }));
     res.send(userWithToken);
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e.errors[0].message);
   }
 };
 

@@ -33,12 +33,18 @@ const uploadToBucket = async (bucketName, file) => {
 };
 
 const getObjectUrl = async (filename) => {
-  const command = new GetObjectCommand({
+  try{
+    const command = new GetObjectCommand({
     Bucket: 'smoulder-2',
     Key: filename,
-  });
-  const url = await getSignedUrl(storage, command);
-  return url;
+    });
+    const url = await getSignedUrl(storage, command);
+    return url;
+  }
+  catch(e){
+    console.log(e);
+    
+  }
 };
 
 const deleteObject = async (filename) => {
