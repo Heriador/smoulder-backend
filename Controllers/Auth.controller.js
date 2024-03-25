@@ -71,7 +71,7 @@ AuthCtrl.register = async (req, res) => {
       },
     });
 
-    user.dataValues.rol = rolUser.dataValues.nombre;
+    user.dataValues.Rol = rolUser;
     delete user.dataValues.rol;
 
     const userWithToken = generateToken(user.get({ raw: true }));
