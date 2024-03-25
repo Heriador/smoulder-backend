@@ -49,4 +49,5 @@ app.use(require('./Routes/comentario.routes'))
 
 app.listen(appPort , () => {
     console.log(`Server listening on port ${appPort}`);
+    console.log(frontendUrl);
 })
